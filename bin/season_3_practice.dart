@@ -1,32 +1,8 @@
-void tampilkanDataTerformat({
-  required String judul,
-  required Map<String, dynamic> data,
-}) {
-  print('\n--- $judul ---');
-  data.forEach((label, nilai) {
-    String labelPadded = label.padRight(12);
-  
-    if (nilai is List<String>) {
-      print('${labelPadded}:');
-      if (nilai.isEmpty) {
-        print('  (Belum ada)');
-      } else {
-        for (var item in nilai) {
-          print('  - $item');
-        }
-      }
-    } 
-    else {
-      print('$labelPadded: $nilai');
-    }
-  });
-}
-
 class Mahasiswa {
-  String nama;
-  String nim;
-  String jurusan;
-  int angkatan;
+    String nama;
+    String nim;
+    String jurusan;
+    int angkatan;
 
   Mahasiswa({
     required this.nama,
@@ -35,44 +11,33 @@ class Mahasiswa {
     required this.angkatan,
   });
 
-  Map<String, dynamic> get dataDasar => {
-        'Nama': nama,
-        'NIM': nim,
-        'Jurusan': jurusan,
-        'Angkatan': angkatan,
-      };
-
   void tampilkanData() {
-    tampilkanDataTerformat(
-      judul: 'Profil Mahasiswa',
-      data: dataDasar,
-    );
+    print("Nama : $nama");
+    print("NIM : $nim");
+    print("Jurusan : $jurusan");
+    print("Angkatan : $angkatan");
   }
 }
-
 class AsistenDosen extends Mahasiswa {
   String mataKuliah;
-  String status = "Asisten Dosen";
 
   AsistenDosen({
-    required super.nama,
-    required super.nim,
-    required super.jurusan,
-    required super.angkatan,
+    required String nama,
+    required String nim,
+    required String jurusan,
+    required int angkatan,
     required this.mataKuliah,
-  });
+  }) : super(
+        nama: nama,
+        nim: nim,
+        jurusan: jurusan,
+        angkatan: angkatan,
+      );
 
   @override
   void tampilkanData() {
-    final dataLengkap = {
-      ...dataDasar,
-      'Mengasuh': mataKuliah,
-    };
-
-    tampilkanDataTerformat(
-      judul: 'Profil $status',
-      data: dataLengkap,
-    );
+    super.tampilkanData();
+    print("Asisten MK: $mataKuliah");
   }
 }
 
@@ -81,60 +46,55 @@ abstract class Pendaftaran {
 }
 
 class MahasiswaAktif extends Mahasiswa implements Pendaftaran {
-  List<String> matkulDiambil = [];
+  List<String> mataKuliah = [];
 
   MahasiswaAktif({
-    required super.nama,
-    required super.nim,
-    required super.jurusan,
-    required super.angkatan,
-  });
+    required String nama,
+    required String nim,
+    required String jurusan,
+    required int angkatan,
+  }) : super(
+        nama: nama,
+        nim: nim,
+        jurusan: jurusan,
+        angkatan: angkatan,
+      );
 
   @override
   void daftarMatkul(String matkul) {
-    matkulDiambil.add(matkul);
-    print("✔ Matkul '$matkul' berhasil ditambahkan untuk $nama.");
+    mataKuliah.add(matkul);
+    print("$nama telah mendaftar mata kuliah: $matkul");
   }
 
   @override
   void tampilkanData() {
-    final dataLengkap = {
-      ...dataDasar,
-      'Mata Kuliah': matkulDiambil,
-    };
-
-    tampilkanDataTerformat(
-      judul: 'Data Mahasiswa Aktif',
-      data: dataLengkap,
-    );
+    super.tampilkanData();
+    print("Mata Kuliah Terdaftar: ${mataKuliah.join(', ')}");
   }
 }
 
 void main() {
-  final mhs1 = Mahasiswa(
-    nama: "Muhammad Vargas Cahyadhi",
-    nim: "1123150071",
+  AsistenDosen asisten = AsistenDosen(
+    nama: "Budi",
+    nim: "123456789",
     jurusan: "Informatika",
-    angkatan: 2023,
+    angkatan: 2021,
+    mataKuliah: "Pemrograman Lanjut",
   );
-  mhs1.tampilkanData();
 
-  final asdos = AsistenDosen(
-    nama: "Pak Budi",
-    nim: "998877",
-    jurusan: "Teknik Informatika",
-    angkatan: 2020,
-    mataKuliah: "Mobile Programming",
+  MahasiswaAktif mahasiswa = MahasiswaAktif(
+    nama: "Siti",
+    nim: "987654321",
+    jurusan: "Sistem Informasi",
+    angkatan: 2022,
   );
-  asdos.tampilkanData();
 
-  final mhs2 = MahasiswaAktif(
-    nama: "Siti Aminah",
-    nim: "1123150088",
-    jurusan: "Teknik Informatika",
-    angkatan: 2023,
-  );
-  mhs2.daftarMatkul("Web Programming");
-  mhs2.daftarMatkul("Mobile Programming");
-  mhs2.tampilkanData();
+  asisten.tampilkanData();
+  print("");
+  mahasiswa.tampilkanData();
+  print("");
+  mahasiswa.daftarMatkul("Basis Data");
+  mahasiswa.daftarMatkul("Jaringan Komputer");
+  print("");
+  mahasiswa.tampilkanData();
 }
